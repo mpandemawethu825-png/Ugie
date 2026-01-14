@@ -2,339 +2,317 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Ugie | The Dashboard</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;400;500;600&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    
+    <title>Ugie App</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --bg-deep: #050807;
-            --glass-panel: rgba(255, 255, 255, 0.03);
-            --glass-border: rgba(255, 255, 255, 0.08);
-            --glass-glow: rgba(255, 255, 255, 0.15);
-            --accent-gold: #d4af37;
-            --accent-green: #2ecc71;
-            --text-main: #ffffff;
-            --text-muted: rgba(255, 255, 255, 0.5);
-            --radius-xl: 32px;
-            --radius-sm: 16px;
+            --bg-deep: #080c0a;
+            --glass-surface: rgba(30, 30, 30, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --accent-gold: #eebb55;
+            --accent-green: #27ae60;
+            --text-white: #ffffff;
+            --radius: 20px;
+            --safe-area-bottom: env(safe-area-inset-bottom);
         }
 
-        /* --- SMOOTH RESET --- */
+        /* --- RESET & STRUCTURE --- */
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
         body {
-            margin: 0;
-            padding: 0;
+            margin: 0; padding: 0;
             font-family: 'Inter', sans-serif;
             background-color: var(--bg-deep);
-            color: var(--text-main);
-            min-height: 100vh;
-            /* Atmospheric Background */
-            background: 
-                radial-gradient(circle at 10% 20%, rgba(30, 80, 50, 0.2), transparent 40%),
-                radial-gradient(circle at 90% 80%, rgba(50, 60, 80, 0.2), transparent 40%),
-                url('https://images.unsplash.com/photo-1473448912268-2022ce9509d8?ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80');
+            color: white;
+            /* Fixed background prevents jitter on mobile scroll */
+            background: linear-gradient(to bottom, rgba(8,12,10,0.8), rgba(8,12,10,0.95)), 
+                        url('https://images.unsplash.com/photo-1473448912268-2022ce9509d8?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80');
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
-            display: flex;
-            justify-content: center;
+            min-height: 100vh;
+            /* Padding bottom for the fixed dock */
+            padding-bottom: calc(80px + var(--safe-area-bottom));
         }
 
-        /* Dark overlay for readability */
-        body::before {
-            content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(5, 8, 7, 0.85); backdrop-filter: blur(5px); z-index: -1;
-        }
-
-        .dashboard {
-            width: 100%;
-            max-width: 900px;
-            padding: 40px 20px 100px;
-            animation: fadeUp 1s cubic-bezier(0.2, 0.8, 0.2, 1);
+        .container {
+            padding: 20px;
+            max-width: 600px; /* Limits width on desktop/tablets */
+            margin: 0 auto;
         }
 
         /* --- HEADER & SEARCH --- */
-        .header {
-            margin-bottom: 40px;
-            text-align: center;
+        .app-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-top: env(safe-area-inset-top);
         }
 
-        .town-name {
-            font-size: 4rem;
-            font-weight: 200;
-            letter-spacing: -2px;
-            margin: 0;
-            background: linear-gradient(to bottom, #fff, #aaa);
+        .location-pill {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 6px 14px;
+            border-radius: 30px;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            border: 1px solid var(--glass-border);
+        }
+
+        .header-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: -1px;
+            margin: 10px 0 20px 0;
+            background: linear-gradient(90deg, #fff, var(--accent-gold));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
-        .town-meta {
-            text-transform: uppercase;
-            letter-spacing: 6px;
-            font-size: 0.7rem;
-            color: var(--accent-gold);
-            margin-top: 10px;
-            opacity: 0.8;
-        }
-
-        .search-container {
-            position: relative;
-            max-width: 500px;
-            margin: 40px auto;
-        }
-
-        .search-pill {
+        .search-bar {
             width: 100%;
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(255,255,255,0.08);
             border: 1px solid var(--glass-border);
-            padding: 18px 24px;
-            padding-left: 55px;
-            border-radius: 50px;
+            padding: 14px 20px;
+            border-radius: 16px;
             color: white;
             font-size: 1rem;
-            font-family: inherit;
-            backdrop-filter: blur(20px);
-            transition: 0.4s ease;
+            backdrop-filter: blur(10px);
             outline: none;
+            margin-bottom: 25px;
+            transition: 0.3s;
+        }
+        .search-bar:focus { border-color: var(--accent-gold); background: rgba(255,255,255,0.12); }
+
+        /* --- HORIZONTAL SWIPE (Stories Style) --- */
+        .scroll-label { font-size: 0.85rem; color: #aaa; margin-bottom: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+
+        .horizontal-scroll {
+            display: flex;
+            gap: 15px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+            /* Smooth momentum scrolling for iOS */
+            -webkit-overflow-scrolling: touch; 
+            margin: 0 -20px 20px -20px; /* Bleed to edges */
+            padding-left: 20px; padding-right: 20px; /* Inner padding */
+        }
+        
+        /* Hide scrollbar */
+        .horizontal-scroll::-webkit-scrollbar { display: none; }
+
+        .icon-card {
+            flex: 0 0 auto; /* Don't shrink */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            width: 75px;
         }
 
-        .search-pill:focus {
-            background: rgba(255, 255, 255, 0.1);
-            border-color: var(--accent-gold);
-            box-shadow: 0 0 30px rgba(212, 175, 55, 0.15);
-            transform: scale(1.02);
-        }
-
-        .search-icon {
-            position: absolute;
-            left: 20px;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 20px;
-            opacity: 0.5;
-        }
-
-        /* --- THE SLEEK GRID --- */
-        .bento-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 20px;
-        }
-
-        /* GLASS CARD PRESET */
-        .glass-box {
-            background: var(--glass-panel);
-            backdrop-filter: blur(30px);
-            -webkit-backdrop-filter: blur(30px);
+        .icon-circle {
+            width: 65px; height: 65px;
+            background: rgba(255,255,255,0.05);
             border: 1px solid var(--glass-border);
-            border-radius: var(--radius-xl);
-            padding: 24px;
-            position: relative;
-            overflow: hidden;
-            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            border-radius: 20px;
+            display: grid; place-items: center;
+            transition: transform 0.2s;
         }
-
-        .glass-box:hover {
-            background: rgba(255, 255, 255, 0.06);
-            border-color: var(--glass-glow);
-            transform: translateY(-5px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-        }
-
-        /* --- WIDGETS --- */
-
-        /* 1. NEWS (Top Wide) */
-        .w-news {
-            grid-column: span 3;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
+        .icon-circle:active { transform: scale(0.9); } /* Tap effect */
         
-        .label {
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            color: var(--text-muted);
-            margin-bottom: 15px;
-            display: block;
+        .icon-img { width: 40px; height: 40px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3)); }
+        .icon-label { font-size: 0.75rem; color: #ccc; }
+
+        /* --- CARDS (Stacked) --- */
+        .card {
+            background: var(--glass-surface);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius);
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
         }
 
-        .news-highlight {
+        /* Weather Compact */
+        .weather-row {
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .temp-wrap { display: flex; align-items: center; gap: 10px; }
+        .big-temp { font-size: 2.5rem; font-weight: 600; }
+        .weather-desc { font-size: 0.9rem; color: var(--accent-gold); }
+
+        /* News List */
+        .news-item {
+            display: flex; gap: 15px; padding: 15px 0; border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .news-item:last-child { border: none; padding-bottom: 0; }
+        .news-thumb { width: 60px; height: 60px; border-radius: 12px; object-fit: cover; background: #333; }
+        .news-title { font-size: 0.95rem; font-weight: 500; margin: 0 0 4px 0; line-height: 1.3; }
+        .news-meta { font-size: 0.75rem; color: #888; }
+
+        /* Hero */
+        .hero-card { padding: 0; height: 200px; position: relative; overflow: hidden; }
+        .hero-bg { width: 100%; height: 100%; object-fit: cover; }
+        .hero-text {
+            position: absolute; bottom: 15px; left: 15px;
+            background: rgba(0,0,0,0.6); backdrop-filter: blur(4px);
+            padding: 6px 12px; border-radius: 12px; font-weight: 600; font-size: 0.9rem;
+        }
+
+        /* --- BOTTOM DOCK (Mobile Navigation) --- */
+        .bottom-dock {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 400px;
+            background: rgba(20, 20, 20, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 25px;
             display: flex;
-            align-items: center;
-            gap: 20px;
-        }
-        
-        .news-img {
-            width: 80px; height: 80px;
-            border-radius: var(--radius-sm);
-            object-fit: cover;
-            filter: brightness(0.8);
-        }
-
-        .news-content h3 { font-size: 1.2rem; font-weight: 400; margin: 0 0 8px 0; }
-        .news-content p { font-size: 0.9rem; color: var(--text-muted); margin: 0; }
-        .tag { color: var(--accent-green); font-size: 0.75rem; letter-spacing: 1px; text-transform: uppercase; }
-
-        /* 2. WEATHER (Top Right) */
-        .w-weather {
-            grid-column: span 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            background: linear-gradient(180deg, rgba(255,255,255,0.05), transparent);
-        }
-        .icon-3d { width: 64px; height: 64px; filter: drop-shadow(0 10px 15px rgba(0,0,0,0.3)); margin-bottom: 10px; animation: float 5s ease-in-out infinite; }
-        .temp-lg { font-size: 2.5rem; font-weight: 200; line-height: 1; }
-        .weather-detail { font-size: 0.8rem; color: var(--text-muted); margin-top: 5px; }
-
-        /* 3. APP SHORTCUTS (The Icons you love) */
-        .w-apps {
-            grid-column: span 4;
-            display: flex;
-            justify-content: space-between;
-            padding: 10px 0;
-        }
-        
-        .app-icon-wrapper {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 12px;
-            text-decoration: none;
-            color: white;
-            transition: transform 0.3s;
-            flex: 1;
-        }
-        .app-icon-wrapper:hover { transform: translateY(-5px); }
-
-        .app-icon-3d {
-            width: 72px; height: 72px;
-            filter: drop-shadow(0 8px 20px rgba(0,0,0,0.4));
-            transition: transform 0.3s;
-        }
-        .app-icon-wrapper:hover .app-icon-3d { transform: scale(1.1); }
-        .app-name { font-size: 0.85rem; font-weight: 500; opacity: 0.8; }
-
-        /* 4. HERO (Gatberg) */
-        .w-hero {
-            grid-column: span 2;
-            min-height: 220px;
-            padding: 0;
-        }
-        .hero-bg {
-            width: 100%; height: 100%; object-fit: cover;
-            transition: transform 0.6s;
-        }
-        .w-hero:hover .hero-bg { transform: scale(1.05); }
-        .hero-overlay {
-            position: absolute; bottom: 0; left: 0; width: 100%;
-            padding: 24px;
-            background: linear-gradient(to top, black, transparent);
-        }
-
-        /* 5. GOV / STATS */
-        .w-stat {
-            grid-column: span 2;
-            display: flex;
-            align-items: center;
             justify-content: space-around;
+            padding: 12px 10px;
+            padding-bottom: calc(12px + env(safe-area-inset-bottom) / 2); /* Adjust for notch */
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            z-index: 100;
         }
-        .stat-item { text-align: center; }
-        .stat-val { font-size: 1.5rem; font-weight: 600; color: var(--accent-gold); }
-        .stat-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
 
-        /* --- ANIMATIONS --- */
-        @keyframes float { 0% { transform: translateY(0); } 50% { transform: translateY(-8px); } 100% { transform: translateY(0); } }
-        @keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* --- MOBILE --- */
-        @media (max-width: 768px) {
-            .bento-grid { display: flex; flex-direction: column; gap: 15px; }
-            .w-apps { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-            .town-name { font-size: 3rem; }
+        .dock-item {
+            display: flex; flex-direction: column; align-items: center; gap: 4px;
+            color: #888; font-size: 0.7rem; text-decoration: none;
+            width: 50px;
         }
+        .dock-item.active { color: var(--accent-gold); }
+        .dock-icon { font-size: 1.4rem; transition: transform 0.2s; }
+        .dock-item:active .dock-icon { transform: scale(0.8); }
 
     </style>
 </head>
 <body>
 
-    <div class="dashboard">
+    <div class="container">
         
-        <header class="header">
-            <h1 class="town-name">UGIE</h1>
-            <div class="town-meta">Eastern Cape • 5470 • Elevation 1,200m</div>
-            
-            <div class="search-container">
-                <img src="https://img.icons8.com/ios-filled/50/ffffff/search--v1.png" class="search-icon" alt="search">
-                <input type="text" class="search-pill" placeholder="Search...">
+        <div class="app-header">
+            <div class="location-pill">📍 5470</div>
+            <div class="location-pill" style="background: transparent; border:none;">24°C</div>
+        </div>
+
+        <h1 class="header-title">Good Morning,<br>Ugie.</h1>
+
+        <input type="text" class="search-bar" placeholder="Find anything...">
+
+        <div class="scroll-label">Shortcuts</div>
+        <div class="horizontal-scroll">
+            <div class="icon-card">
+                <div class="icon-circle">
+                    <img src="https://img.icons8.com/fluency/48/school.png" class="icon-img">
+                </div>
+                <span class="icon-label">Schools</span>
             </div>
-        </header>
+            <div class="icon-card">
+                <div class="icon-circle">
+                    <img src="https://img.icons8.com/fluency/48/forest.png" class="icon-img">
+                </div>
+                <span class="icon-label">Forestry</span>
+            </div>
+            <div class="icon-card">
+                <div class="icon-circle">
+                    <img src="https://img.icons8.com/fluency/48/tractor.png" class="icon-img">
+                </div>
+                <span class="icon-label">Museum</span>
+            </div>
+            <div class="icon-card">
+                <div class="icon-circle">
+                    <img src="https://img.icons8.com/fluency/48/city-hall.png" class="icon-img">
+                </div>
+                <span class="icon-label">Council</span>
+            </div>
+             <div class="icon-card">
+                <div class="icon-circle">
+                    <img src="https://img.icons8.com/fluency/48/hospital-3.png" class="icon-img">
+                </div>
+                <span class="icon-label">Clinic</span>
+            </div>
+        </div>
 
-        <div class="bento-grid">
+        <div class="card hero-card">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/e/e0/Gatberg_near_Ugie.jpg" class="hero-bg">
+            <div class="hero-text">🏔️ The Gatberg Trail</div>
+        </div>
 
-            <div class="glass-box w-news">
-                <span class="label">Latest Bulletin</span>
-                <div class="news-highlight">
-                    <img src="https://images.unsplash.com/photo-1621905251189-08b45d6a269e?auto=format&fit=crop&w=200&q=80" class="news-img">
-                    <div class="news-content">
-                        <span class="tag">Infrastructure</span>
-                        <h3>R56 Road Upgrades</h3>
-                        <p>Paving complete near Maclear junction.</p>
+        <div class="card">
+            <div class="weather-row">
+                <div class="temp-wrap">
+                    <img src="https://img.icons8.com/fluency/48/partly-cloudy-day.png" width="40">
+                    <div>
+                        <div class="big-temp">24°</div>
                     </div>
                 </div>
-            </div>
-
-            <div class="glass-box w-weather">
-                <img src="https://img.icons8.com/fluency/96/sun.png" class="icon-3d" alt="Sun">
-                <div class="temp-lg">26°</div>
-                <div class="weather-detail">Clear Sky</div>
-            </div>
-
-            <div class="w-apps">
-                <a href="#" class="app-icon-wrapper">
-                    <img src="https://img.icons8.com/fluency/96/school.png" class="app-icon-3d" alt="School">
-                    <span class="app-name">Schools</span>
-                </a>
-                <a href="#" class="app-icon-wrapper">
-                    <img src="https://img.icons8.com/fluency/96/museum.png" class="app-icon-3d" alt="Gov">
-                    <span class="app-name">Council</span>
-                </a>
-                <a href="#" class="app-icon-wrapper">
-                    <img src="https://img.icons8.com/fluency/96/forest.png" class="app-icon-3d" alt="Forest">
-                    <span class="app-name">PG Bison</span>
-                </a>
-                <a href="#" class="app-icon-wrapper">
-                    <img src="https://img.icons8.com/fluency/96/tractor.png" class="app-icon-3d" alt="Tractor">
-                    <span class="app-name">Museum</span>
-                </a>
-            </div>
-
-            <div class="glass-box w-hero">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/e/e0/Gatberg_near_Ugie.jpg" class="hero-bg">
-                <div class="hero-overlay">
-                    <h3 style="margin:0; font-weight:400;">The Gatberg</h3>
-                    <span style="font-size:0.8rem; opacity:0.7;">Natural Landmark</span>
+                <div style="text-align: right;">
+                    <div style="font-weight: 600;">Sunny Intervals</div>
+                    <div style="font-size: 0.8rem; color: #888;">UV Index: High</div>
                 </div>
             </div>
-
-            <div class="glass-box w-stat">
-                <div class="stat-item">
-                    <div class="stat-val">Leteba</div>
-                    <div class="stat-label">Mayor</div>
-                </div>
-                <div class="stat-item" style="opacity: 0.2; width: 1px; height: 40px; background: white;"></div>
-                <div class="stat-item">
-                    <div class="stat-val">Mdeni</div>
-                    <div class="stat-label">Manager</div>
-                </div>
-            </div>
-
         </div>
+
+        <div class="card">
+            <div style="margin-bottom: 15px; font-weight: 600; display:flex; justify-content:space-between;">
+                <span>Latest Updates</span>
+                <span style="color:var(--accent-gold); font-size:0.8rem;">View All</span>
+            </div>
+            
+            <div class="news-item">
+                <img src="https://images.unsplash.com/photo-1621905251189-08b45d6a269e?auto=format&fit=crop&w=100&q=80" class="news-thumb">
+                <div>
+                    <div class="news-title">R56 Roadworks Update</div>
+                    <div class="news-meta">Infrastructure • 2h ago</div>
+                </div>
+            </div>
+
+            <div class="news-item">
+                <img src="https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&w=100&q=80" class="news-thumb">
+                <div>
+                    <div class="news-title">PG Bison Green Initiative</div>
+                    <div class="news-meta">Environment • 1d ago</div>
+                </div>
+            </div>
+        </div>
+
+        <div style="height: 20px;"></div>
+
+    </div>
+
+    <div class="bottom-dock">
+        <a href="#" class="dock-item active">
+            <span class="dock-icon">🏠</span>
+            <span>Home</span>
+        </a>
+        <a href="#" class="dock-item">
+            <span class="dock-icon">🗺️</span>
+            <span>Map</span>
+        </a>
+        <a href="#" class="dock-item">
+            <span class="dock-icon">🔍</span>
+            <span>Search</span>
+        </a>
+        <a href="#" class="dock-item">
+            <span class="dock-icon">👤</span>
+            <span>Profile</span>
+        </a>
     </div>
 
 </body>
