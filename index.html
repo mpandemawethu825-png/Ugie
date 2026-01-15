@@ -6,8 +6,9 @@
     
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#080c0a">
     
-    <title>Ugie App</title>
+    <title>Ugie Live Dashboard</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
@@ -18,187 +19,140 @@
             --accent-gold: #eebb55;
             --accent-green: #27ae60;
             --text-white: #ffffff;
+            --text-muted: #a0a0a0;
             --radius: 20px;
             --safe-area-bottom: env(safe-area-inset-bottom);
         }
 
-        /* --- RESET & STRUCTURE --- */
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
         body {
             margin: 0; padding: 0;
             font-family: 'Inter', sans-serif;
-            background-color: var(--bg-deep);
             color: white;
-            /* Fixed background prevents jitter on mobile scroll */
-            background: linear-gradient(to bottom, rgba(8,12,10,0.8), rgba(8,12,10,0.95)), 
+            background: linear-gradient(to bottom, rgba(8,12,10,0.7), rgba(8,12,10,0.95)), 
                         url('https://images.unsplash.com/photo-1473448912268-2022ce9509d8?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80');
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
             min-height: 100vh;
-            /* Padding bottom for the fixed dock */
-            padding-bottom: calc(80px + var(--safe-area-bottom));
+            padding-bottom: calc(90px + var(--safe-area-bottom));
         }
 
-        .container {
-            padding: 20px;
-            max-width: 600px; /* Limits width on desktop/tablets */
-            margin: 0 auto;
-        }
+        .container { padding: 20px; max-width: 600px; margin: 0 auto; }
 
-        /* --- HEADER & SEARCH --- */
+        /* HEADER & CLOCK */
         .app-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            padding-top: env(safe-area-inset-top);
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 10px; padding-top: env(safe-area-inset-top);
         }
 
         .location-pill {
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
-            padding: 6px 14px;
-            border-radius: 30px;
-            font-size: 0.85rem;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            border: 1px solid var(--glass-border);
+            padding: 6px 14px; border-radius: 30px; font-size: 0.8rem;
+            display: flex; align-items: center; gap: 6px; border: 1px solid var(--glass-border);
         }
 
-        .header-title {
-            font-size: 1.8rem;
-            font-weight: 700;
-            letter-spacing: -1px;
-            margin: 10px 0 20px 0;
+        /* LIVE CLOCK STYLES */
+        .live-clock-container {
+            margin-bottom: 20px;
+        }
+        .greeting {
+            font-size: 1.2rem; color: var(--text-muted); font-weight: 400; margin: 0;
+        }
+        .real-time-display {
+            font-size: 3rem; font-weight: 700; margin: 0;
             background: linear-gradient(90deg, #fff, var(--accent-gold));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            line-height: 1.1;
+        }
+        .date-display {
+            font-size: 0.9rem; color: var(--accent-gold); font-weight: 500; margin-top: 5px;
         }
 
+        /* SEARCH */
         .search-bar {
-            width: 100%;
-            background: rgba(255,255,255,0.08);
-            border: 1px solid var(--glass-border);
-            padding: 14px 20px;
-            border-radius: 16px;
-            color: white;
-            font-size: 1rem;
-            backdrop-filter: blur(10px);
-            outline: none;
-            margin-bottom: 25px;
-            transition: 0.3s;
+            width: 100%; background: rgba(255,255,255,0.08); border: 1px solid var(--glass-border);
+            padding: 14px 20px; border-radius: 16px; color: white; font-size: 1rem;
+            backdrop-filter: blur(10px); outline: none; margin-bottom: 25px; transition: 0.3s;
         }
         .search-bar:focus { border-color: var(--accent-gold); background: rgba(255,255,255,0.12); }
 
-        /* --- HORIZONTAL SWIPE (Stories Style) --- */
-        .scroll-label { font-size: 0.85rem; color: #aaa; margin-bottom: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
-
+        /* SHORTCUTS */
+        .scroll-label { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
         .horizontal-scroll {
-            display: flex;
-            gap: 15px;
-            overflow-x: auto;
-            padding-bottom: 10px;
-            /* Smooth momentum scrolling for iOS */
-            -webkit-overflow-scrolling: touch; 
-            margin: 0 -20px 20px -20px; /* Bleed to edges */
-            padding-left: 20px; padding-right: 20px; /* Inner padding */
+            display: flex; gap: 15px; overflow-x: auto; padding-bottom: 10px;
+            -webkit-overflow-scrolling: touch; margin: 0 -20px 20px -20px; padding-left: 20px; padding-right: 20px;
         }
-        
-        /* Hide scrollbar */
         .horizontal-scroll::-webkit-scrollbar { display: none; }
-
-        .icon-card {
-            flex: 0 0 auto; /* Don't shrink */
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
-            width: 75px;
-        }
-
+        .icon-card { flex: 0 0 auto; display: flex; flex-direction: column; align-items: center; gap: 8px; width: 75px; cursor: pointer; }
         .icon-circle {
-            width: 65px; height: 65px;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid var(--glass-border);
-            border-radius: 20px;
-            display: grid; place-items: center;
+            width: 64px; height: 64px; background: rgba(255,255,255,0.05);
+            border: 1px solid var(--glass-border); border-radius: 20px; display: grid; place-items: center;
             transition: transform 0.2s;
         }
-        .icon-circle:active { transform: scale(0.9); } /* Tap effect */
-        
-        .icon-img { width: 40px; height: 40px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3)); }
-        .icon-label { font-size: 0.75rem; color: #ccc; }
+        .icon-card:active .icon-circle { transform: scale(0.92); background: rgba(255,255,255,0.1); }
+        .icon-img { width: 36px; height: 36px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3)); }
+        .icon-label { font-size: 0.75rem; color: #ccc; text-align: center; }
 
-        /* --- CARDS (Stacked) --- */
+        /* CARDS */
         .card {
-            background: var(--glass-surface);
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
-            border: 1px solid var(--glass-border);
-            border-radius: var(--radius);
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            background: var(--glass-surface); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
+            border: 1px solid var(--glass-border); border-radius: var(--radius); padding: 20px;
+            margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.25);
         }
-
-        /* Weather Compact */
-        .weather-row {
-            display: flex; justify-content: space-between; align-items: center;
-        }
-        .temp-wrap { display: flex; align-items: center; gap: 10px; }
-        .big-temp { font-size: 2.5rem; font-weight: 600; }
-        .weather-desc { font-size: 0.9rem; color: var(--accent-gold); }
-
-        /* News List */
-        .news-item {
-            display: flex; gap: 15px; padding: 15px 0; border-bottom: 1px solid rgba(255,255,255,0.05);
-        }
-        .news-item:last-child { border: none; padding-bottom: 0; }
-        .news-thumb { width: 60px; height: 60px; border-radius: 12px; object-fit: cover; background: #333; }
-        .news-title { font-size: 0.95rem; font-weight: 500; margin: 0 0 4px 0; line-height: 1.3; }
-        .news-meta { font-size: 0.75rem; color: #888; }
 
         /* Hero */
-        .hero-card { padding: 0; height: 200px; position: relative; overflow: hidden; }
+        .hero-card { padding: 0; height: 220px; position: relative; overflow: hidden; }
         .hero-bg { width: 100%; height: 100%; object-fit: cover; }
-        .hero-text {
-            position: absolute; bottom: 15px; left: 15px;
-            background: rgba(0,0,0,0.6); backdrop-filter: blur(4px);
-            padding: 6px 12px; border-radius: 12px; font-weight: 600; font-size: 0.9rem;
+        .hero-overlay {
+            position: absolute; bottom: 0; left: 0; width: 100%;
+            background: linear-gradient(to top, rgba(0,0,0,0.9), transparent); padding: 20px;
         }
+        .hero-tag { background: var(--accent-gold); color: black; font-size: 0.7rem; font-weight: 700; padding: 4px 8px; border-radius: 4px; }
 
-        /* --- BOTTOM DOCK (Mobile Navigation) --- */
+        /* Weather Live */
+        .weather-row { display: flex; justify-content: space-between; align-items: center; }
+        .temp-wrap { display: flex; align-items: center; gap: 15px; }
+        .big-temp { font-size: 2.8rem; font-weight: 600; line-height: 1; }
+        .weather-meta { font-size: 0.85rem; color: var(--text-muted); }
+        .weather-icon-lg { width: 50px; height: 50px; filter: drop-shadow(0 0 10px rgba(255,220,0,0.4)); }
+        .loading-text { font-size: 0.8rem; color: var(--text-muted); animation: pulse 1.5s infinite; }
+        
+        @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
+
+        /* History */
+        .history-content h3 { font-size: 1.1rem; margin: 0 0 10px 0; color: white; }
+        .history-content p { font-size: 0.9rem; color: var(--text-muted); line-height: 1.6; margin: 0; }
+        .history-meta { display: flex; gap: 15px; margin-top: 15px; font-size: 0.8rem; color: var(--accent-gold); font-weight: 600; }
+
+        /* News */
+        .news-header { display: flex; justify-content: space-between; margin-bottom: 15px; align-items: center; }
+        .news-item { display: flex; gap: 15px; padding: 15px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .news-item:last-child { border: none; padding-bottom: 0; }
+        .news-thumb { width: 60px; height: 60px; border-radius: 12px; object-fit: cover; background: #333; }
+        .news-title { font-size: 0.95rem; font-weight: 500; margin: 0 0 6px 0; line-height: 1.3; }
+        .news-time { font-size: 0.75rem; color: var(--text-muted); }
+
+        /* DOCK */
         .bottom-dock {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 90%;
-            max-width: 400px;
-            background: rgba(20, 20, 20, 0.85);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255,255,255,0.15);
-            border-radius: 25px;
-            display: flex;
-            justify-content: space-around;
-            padding: 12px 10px;
-            padding-bottom: calc(12px + env(safe-area-inset-bottom) / 2); /* Adjust for notch */
-            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
-            z-index: 100;
+            position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%);
+            width: 88%; max-width: 380px; background: rgba(15, 15, 15, 0.8);
+            backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(255,255,255,0.15); border-radius: 28px;
+            display: flex; justify-content: space-between; padding: 14px 25px;
+            padding-bottom: calc(14px + env(safe-area-inset-bottom) / 3);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.6); z-index: 999;
         }
-
         .dock-item {
-            display: flex; flex-direction: column; align-items: center; gap: 4px;
-            color: #888; font-size: 0.7rem; text-decoration: none;
-            width: 50px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            gap: 5px; color: #666; font-size: 0.7rem; text-decoration: none; width: 50px;
         }
         .dock-item.active { color: var(--accent-gold); }
-        .dock-icon { font-size: 1.4rem; transition: transform 0.2s; }
-        .dock-item:active .dock-icon { transform: scale(0.8); }
+        .dock-icon { font-size: 1.5rem; transition: transform 0.2s; }
+        .dock-item:active .dock-icon { transform: scale(0.85); }
 
     </style>
 </head>
@@ -207,113 +161,193 @@
     <div class="container">
         
         <div class="app-header">
-            <div class="location-pill">📍 5470</div>
-            <div class="location-pill" style="background: transparent; border:none;">24°C</div>
+            <div class="location-pill">📍 Joe Gqabi District</div>
+            <div style="width: 35px; height: 35px; background: rgba(255,255,255,0.1); border-radius: 50%; display: grid; place-items: center; border: 1px solid var(--glass-border);">
+                <span style="font-size: 1rem;">👤</span>
+            </div>
         </div>
 
-        <h1 class="header-title">Good Morning,<br>Ugie.</h1>
+        <div class="live-clock-container">
+            <h2 id="greeting" class="greeting">Loading...</h2>
+            <div id="clock" class="real-time-display">00:00</div>
+            <div id="date" class="date-display">...</div>
+        </div>
 
-        <input type="text" class="search-bar" placeholder="Find anything...">
+        <input type="text" class="search-bar" placeholder="Search schools, businesses...">
 
-        <div class="scroll-label">Shortcuts</div>
+        <div class="scroll-label">Explore</div>
         <div class="horizontal-scroll">
             <div class="icon-card">
-                <div class="icon-circle">
-                    <img src="https://img.icons8.com/fluency/48/school.png" class="icon-img">
-                </div>
+                <div class="icon-circle"><img src="https://img.icons8.com/fluency/48/school.png" class="icon-img"></div>
                 <span class="icon-label">Schools</span>
             </div>
             <div class="icon-card">
-                <div class="icon-circle">
-                    <img src="https://img.icons8.com/fluency/48/forest.png" class="icon-img">
-                </div>
+                <div class="icon-circle"><img src="https://img.icons8.com/fluency/48/forest.png" class="icon-img"></div>
                 <span class="icon-label">Forestry</span>
             </div>
             <div class="icon-card">
-                <div class="icon-circle">
-                    <img src="https://img.icons8.com/fluency/48/tractor.png" class="icon-img">
-                </div>
+                <div class="icon-circle"><img src="https://img.icons8.com/fluency/48/tractor.png" class="icon-img"></div>
                 <span class="icon-label">Museum</span>
             </div>
             <div class="icon-card">
-                <div class="icon-circle">
-                    <img src="https://img.icons8.com/fluency/48/city-hall.png" class="icon-img">
-                </div>
+                <div class="icon-circle"><img src="https://img.icons8.com/fluency/48/city-hall.png" class="icon-img"></div>
                 <span class="icon-label">Council</span>
             </div>
              <div class="icon-card">
-                <div class="icon-circle">
-                    <img src="https://img.icons8.com/fluency/48/hospital-3.png" class="icon-img">
-                </div>
-                <span class="icon-label">Clinic</span>
+                <div class="icon-circle"><img src="https://img.icons8.com/fluency/48/hospital-3.png" class="icon-img"></div>
+                <span class="icon-label">Services</span>
             </div>
         </div>
 
         <div class="card hero-card">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/e/e0/Gatberg_near_Ugie.jpg" class="hero-bg">
-            <div class="hero-text">🏔️ The Gatberg Trail</div>
+            <img src="https://upload.wikimedia.org/wikipedia/commons/e/e0/Gatberg_near_Ugie.jpg" class="hero-bg" alt="Gatberg">
+            <div class="hero-overlay">
+                <span class="hero-tag">LANDMARK</span>
+                <h3 style="margin: 5px 0 0 0;">The Gatberg</h3>
+                <span style="font-size: 0.8rem; opacity: 0.8;">Southern foot of the Drakensberg</span>
+            </div>
         </div>
 
         <div class="card">
             <div class="weather-row">
                 <div class="temp-wrap">
-                    <img src="https://img.icons8.com/fluency/48/partly-cloudy-day.png" width="40">
+                    <img id="weather-icon" src="https://img.icons8.com/fluency/96/cloud.png" class="weather-icon-lg" alt="Weather">
                     <div>
-                        <div class="big-temp">24°</div>
+                        <div id="temperature" class="big-temp">--°</div>
+                        <div id="condition" class="loading-text">Loading Live Weather...</div>
                     </div>
                 </div>
                 <div style="text-align: right;">
-                    <div style="font-weight: 600;">Sunny Intervals</div>
-                    <div style="font-size: 0.8rem; color: #888;">UV Index: High</div>
+                    <div id="wind-speed" class="weather-meta">Wind: --</div>
+                    <div style="font-size: 0.8rem; color: #888; margin-top:4px;">Ugie, EC</div>
                 </div>
             </div>
         </div>
 
         <div class="card">
-            <div style="margin-bottom: 15px; font-weight: 600; display:flex; justify-content:space-between;">
-                <span>Latest Updates</span>
-                <span style="color:var(--accent-gold); font-size:0.8rem;">View All</span>
-            </div>
-            
-            <div class="news-item">
-                <img src="https://images.unsplash.com/photo-1621905251189-08b45d6a269e?auto=format&fit=crop&w=100&q=80" class="news-thumb">
-                <div>
-                    <div class="news-title">R56 Roadworks Update</div>
-                    <div class="news-meta">Infrastructure • 2h ago</div>
+            <div class="history-content">
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+                    <span style="font-size: 1.5rem;">📜</span>
+                    <h3>Our Heritage</h3>
                 </div>
-            </div>
-
-            <div class="news-item">
-                <img src="https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&w=100&q=80" class="news-thumb">
-                <div>
-                    <div class="news-title">PG Bison Green Initiative</div>
-                    <div class="news-meta">Environment • 1d ago</div>
+                <p>
+                    Established in 1863 by William Murray as a mission station at Gatberg. The town was officially founded in 1885 and named <strong>Ugie</strong> after the Ugie River in Scotland, where Murray was born.
+                </p>
+                <div class="history-meta">
+                    <span>Est. 1885</span>
+                    <span>•</span>
+                    <span>Maclear: 18km ↗</span>
                 </div>
             </div>
         </div>
 
-        <div style="height: 20px;"></div>
+        <div class="card">
+            <div class="news-header">
+                <span style="font-weight: 600;">Latest Updates</span>
+                <span style="color:var(--accent-gold); font-size:0.8rem;">View All</span>
+            </div>
+            <div class="news-item">
+                <img src="https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&w=100&q=80" class="news-thumb">
+                <div>
+                    <div class="news-title">PG Bison Expansion</div>
+                    <div class="news-time">Business • 2d ago</div>
+                </div>
+            </div>
+        </div>
 
     </div>
 
     <div class="bottom-dock">
-        <a href="#" class="dock-item active">
-            <span class="dock-icon">🏠</span>
-            <span>Home</span>
-        </a>
-        <a href="#" class="dock-item">
-            <span class="dock-icon">🗺️</span>
-            <span>Map</span>
-        </a>
-        <a href="#" class="dock-item">
-            <span class="dock-icon">🔍</span>
-            <span>Search</span>
-        </a>
-        <a href="#" class="dock-item">
-            <span class="dock-icon">👤</span>
-            <span>Profile</span>
-        </a>
+        <a href="#" class="dock-item active"><span class="dock-icon">🏠</span><span>Home</span></a>
+        <a href="#" class="dock-item"><span class="dock-icon">🗺️</span><span>Map</span></a>
+        <a href="#" class="dock-item"><span class="dock-icon">🔍</span><span>Search</span></a>
+        <a href="#" class="dock-item"><span class="dock-icon">⚙️</span><span>Menu</span></a>
     </div>
+
+    <script>
+        // --- 1. Real-Time Clock ---
+        function updateClock() {
+            const now = new Date();
+            const hours = now.getHours();
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            
+            // Update Time Display
+            document.getElementById('clock').textContent = `${hours}:${minutes}`;
+
+            // Update Date Display
+            const options = { weekday: 'long', day: 'numeric', month: 'long' };
+            document.getElementById('date').textContent = now.toLocaleDateString('en-GB', options);
+
+            // Update Greeting based on time of day
+            const greetingEl = document.getElementById('greeting');
+            if (hours < 12) {
+                greetingEl.textContent = "Good Morning,";
+            } else if (hours < 18) {
+                greetingEl.textContent = "Good Afternoon,";
+            } else {
+                greetingEl.textContent = "Good Evening,";
+            }
+        }
+        
+        // Run clock immediately and then every second
+        updateClock();
+        setInterval(updateClock, 1000);
+
+        // --- 2. Live Weather (Open-Meteo API) ---
+        async function fetchWeather() {
+            // Ugie Coordinates
+            const lat = -31.196;
+            const lon = 28.236;
+            
+            try {
+                const response = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`);
+                const data = await response.json();
+                const current = data.current_weather;
+
+                // Update DOM
+                document.getElementById('temperature').textContent = `${Math.round(current.temperature)}°`;
+                document.getElementById('wind-speed').textContent = `Wind: ${current.windspeed} km/h`;
+
+                // Map WMO Weather Codes to Text & Icons
+                const code = current.weathercode;
+                const conditionEl = document.getElementById('condition');
+                const iconEl = document.getElementById('weather-icon');
+
+                let conditionText = "Clear";
+                let iconUrl = "https://img.icons8.com/fluency/96/sun.png";
+
+                // Simple WMO Code Mapping
+                if (code === 0) {
+                    conditionText = "Clear Sky";
+                    iconUrl = "https://img.icons8.com/fluency/96/sun.png";
+                } else if (code >= 1 && code <= 3) {
+                    conditionText = "Partly Cloudy";
+                    iconUrl = "https://img.icons8.com/fluency/96/partly-cloudy-day.png";
+                } else if (code >= 45 && code <= 48) {
+                    conditionText = "Foggy";
+                    iconUrl = "https://img.icons8.com/fluency/96/fog-day.png";
+                } else if (code >= 51 && code <= 67) {
+                    conditionText = "Rain";
+                    iconUrl = "https://img.icons8.com/fluency/96/rain.png";
+                } else if (code >= 80 && code <= 99) {
+                    conditionText = "Stormy";
+                    iconUrl = "https://img.icons8.com/fluency/96/storm.png";
+                }
+
+                // Update Condition Text & Icon
+                conditionEl.textContent = conditionText;
+                conditionEl.classList.remove('loading-text'); // Stop blinking
+                iconEl.src = iconUrl;
+
+            } catch (error) {
+                console.error("Weather fetch failed", error);
+                document.getElementById('condition').textContent = "Weather Unavailable";
+            }
+        }
+
+        // Fetch weather on load
+        fetchWeather();
+    </script>
 
 </body>
 </html>
